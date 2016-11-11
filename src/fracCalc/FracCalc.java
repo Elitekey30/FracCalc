@@ -39,14 +39,17 @@ public class FracCalc {
 		String operator = equationScanner.next();
 		String operand2 = equationScanner.next();
 		Number number2 = parsingNumbers(operand2);
+		wholeAnswer = 0;
+		number1.numerator = convertToImproperFraction(number1);
+		number1.whole = 0;
+		number2.numerator = convertToImproperFraction(number2);
+		number2.whole = 0;
 		if (operator.contains("-")) {
-			// Whole number Subtraction
-			wholeAnswer = number1.whole - number2.whole;
 			// Finding common denominators
 			if (number1.denominator != number2.denominator) {
 				denominatorAnswer = number1.denominator * number2.denominator;
-				int numeratorAnswer1 = number1.denominator * number2.numerator;
-				int numeratorAnswer2 = number1.numerator * number2.denominator;
+				int numeratorAnswer1 = number1.numerator * number2.denominator;
+				int numeratorAnswer2 = number2.numerator * number1.denominator;
 				numeratorAnswer = numeratorAnswer1 - numeratorAnswer2;
 			} else {
 				denominatorAnswer = number1.denominator;
@@ -54,8 +57,6 @@ public class FracCalc {
 			}
 		}
 		if (operator.contains("+")) {
-			// Whole number Addition
-			wholeAnswer = number1.whole + number2.whole;
 			// Finding common denominators
 			if (number1.denominator != number2.denominator) {
 				denominatorAnswer = number1.denominator * number2.denominator;
@@ -68,34 +69,37 @@ public class FracCalc {
 			}
 		}
 		if (operator.contains("*")) {
-			// Whole number Multiplication
-			wholeAnswer = number1.whole * number2.whole;
 			// Fraction Multiplication
 			denominatorAnswer = number1.denominator * number2.denominator;
 			numeratorAnswer = number1.numerator * number2.numerator;
 		}
 		if (operator.contains("/")) {
-			// Whole number Division
-			if(number2.whole == 0){
-				wholeAnswer = 0;
-			}
-			else{
-			wholeAnswer = number1.whole / number2.whole;
-			}
 			// Fraction Division
 			denominatorAnswer = number1.denominator * number2.numerator;
 			numeratorAnswer = number1.numerator * number2.denominator;
 		}
 		//Simplification
 		String answerString;
+		if (denominatorAnswer != 0){
+			int quotient = numeratorAnswer / denominatorAnswer;
+			wholeAnswer = quotient + wholeAnswer;
+			numeratorAnswer = numeratorAnswer % denominatorAnswer;
+		}
 		if(wholeAnswer != 0){
 			answerString = wholeAnswer + "_" + Math.abs(numeratorAnswer)+ "/" + Math.abs(denominatorAnswer);
 		}
 		else{
+			// TODO Need to figure out how to handle a negative denominator with a positive numerator.
 			answerString = numeratorAnswer+ "/" + denominatorAnswer;
 		}
 		return answerString;
 		
+	}
+
+	public static int convertToImproperFraction(Number number1) {
+		int wholeAnswer1 = number1.whole * number1.denominator;
+		int newNumerator1 = wholeAnswer1 + number1.numerator;
+		return newNumerator1;
 	}
 
 	// TODO: Fill in the space below with any helper methods that you think you
